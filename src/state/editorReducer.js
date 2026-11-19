@@ -1,3 +1,5 @@
+import { PRESETS } from "./presets.js"
+
 export const initialEditor = {
   photo: "fjord",
   preset: "original",
@@ -12,13 +14,39 @@ export const initialEditor = {
 export function editorReducer(editor, action) {
   switch (action.type) {
     case "slider_moved":
-      return { ...editor, [action.name]: action.value };
+      return { ...editor, [action.name]: action.value, preset: "custom" };
 
+    case "preset_chosen":
+        return { ...editor, ...PRESETS[action.preset], preset: action.preset}
+    
     case "rotated_left":
       return {
         ...editor,
         rotation: editor.rotation === 0 ? 270 : editor.rotation - 90,
       };
+
+      case "rotated_right":
+      return {
+        ...editor,
+        rotation: editor.rotation === 0 ? 270 : editor.rotation + 90,
+      };
+      case "flip_toggled":
+        return {
+            ...editor,
+            flipped: editor.flipped === false ? true : false,
+        };
+
+      case "photo_chosen":
+        return { ...initialEditor, photo: action.photo}
+
+    case "edits_reset":
+        return { ...initialEditor, photo: editor.photo}
+
+
+      case "straightened":
+        return { ...editor, rotation: 0, flipped: false };
+
+      
 
     case "edits_reset":
       editor.preset = "original";
